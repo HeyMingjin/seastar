@@ -29,7 +29,7 @@ namespace seastar {
 // RISC-V: workaround for https://gcc.gnu.org/bugzilla/show_bug.cgi?id=116662
 #ifdef __riscv
 constexpr std::size_t cache_line_size = 64;
-#else
+#elif defined(__cpp_lib_hardware_interference_size) && __cpp_lib_hardware_interference_size >= 201603L
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Winterference-size"
@@ -38,6 +38,8 @@ constexpr std::size_t cache_line_size = std::hardware_destructive_interference_s
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
+#else
+constexpr std::size_t cache_line_size = 64;
 #endif
 
 }
